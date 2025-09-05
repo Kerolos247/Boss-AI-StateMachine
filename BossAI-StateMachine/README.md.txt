@@ -12,7 +12,7 @@ the **artificial intelligence system** that drives the boss’s behavior.
 - Easy-to-extend architecture for adding new behaviors.  
 
 ## 🎥 Demo Video  
-Watch the boss fight in action: [YouTube Link](https://youtube.com/xxxx)  
+Watch the boss fight on [LinkedIn](https://www.linkedin.com/posts/kerolos-adel-190948375_gamedevelopment-csharp-backenddeveloper-activity-7351989946074701824-Umsv?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFzdtvwBqq9LIvH0ErzLfci3qroeYaCnOjY) 
 
 ## 💻 Source Code  
 The AI logic is available in [`src/BossAI.cs`](src/BossAI.cs).  
