@@ -5,7 +5,8 @@ Instead of sharing the entire project (thousands of lines of code), here I highl
 the **artificial intelligence system** that drives the boss’s behavior.  
 
 ## 🚀 Features of the Boss AI
-- **Finite State Machine (FSM)** to control boss behavior (Idle, Walk, Fly, Attack, Death).  
+- **Finite State Machine (FSM)** to control boss behavior (Idle, Walk, Fly, Attack, Death). 
+-Idle → WalkLeft → Fly → DownFly → WalkLeft → Death.
 - Smooth **state transitions** with animations.  
 - Dynamic **player interaction** (boss reacts based on hero’s position).  
 - **Screen shake effect** for dramatic impact.  
@@ -25,4 +26,5 @@ The AI logic is available in [`src/BossAI.cs`](src/BossAI.cs).
 ---
 
 ⭐ If you find this project interesting, feel free to explore, learn, and connect with me!  
+
 
