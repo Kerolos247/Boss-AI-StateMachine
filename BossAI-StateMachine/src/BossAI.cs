@@ -1,168 +1,129 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
 using System.Drawing;
-enum BossState
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Text;
+using System.Threading.Tasks;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
+using static WindowsFormsApp26.GameStates;
+
+namespace WindowsFormsApp26
 {
-    Idle,
-    WalkLeft,
-    Fly,
-    DownFly,
-    Death
-}
-class BigBoss
-{
-    public int x, y;
-    public int ifram_walk_left, ifram_fly_left, ifram_death;
-    public List<Bitmap> walk_left, fly_left, death;
-
-    public BossState State { get; set; } = BossState.Idle;
-
-    // Helpers
-    private int slow = 0;
-    private int slow_fly = 0;
-    private int cv = 0, e = 0;
-    private int count_vib = 0;
-
-    public void Update(ref int Xscroll, Hero hero, ref bool lose_boss, ref int Volume_blood_boss, ref int finish)
+    internal class Boss : CreatureActions
     {
-        switch (State)
+        public int Volume_blood_boss = 100;
+        public bool RightFly = false;
+
+        public BossState State = BossState.Idle;
+
+        public Animation WalkLeft = new Animation();
+        public Animation FlyLeft = new Animation();
+        public Animation DeathAnim = new Animation();
+
+        // ====== State Machine ======
+        public void Logic_StateMachine(Graphics g, int Xscroll)
         {
-            case BossState.WalkLeft:
-                WalkLeft(ref Xscroll);
-                break;
-
-            case BossState.Fly:
-                Fly(ref Xscroll);
-                break;
-
-            case BossState.DownFly:
-                DownFly(ref Xscroll, hero, ref Volume_blood_boss);
-                break;
-
-            case BossState.Death:
-                DeathState(ref Xscroll, ref lose_boss, ref finish);
-                break;
-
-            case BossState.Idle:
-            default:
-               
-                break;
-        }
-    }
-
-    public void Draw(Graphics g, int Xscroll)
-    {
-        Bitmap img = null;
-        switch (State)
-        {
-            case BossState.WalkLeft:
-                img = walk_left[ifram_walk_left];
-                break;
-
-            case BossState.Fly:
-                img = fly_left[ifram_fly_left];
-                break;
-
-            case BossState.DownFly:
-                img = fly_left[ifram_fly_left];
-                break;
-
-            case BossState.Death:
-                img = death[ifram_death];
-                break;
-
-            case BossState.Idle:
-                img = walk_left[0]; // idle frame
-                break;
-        }
-
-        if (img != null)
-            g.DrawImage(img, x - Xscroll, y);
-    }
-
-    private void WalkLeft(ref int Xscroll)
-    {
-        x -= 3;
-        slow++;
-        if (slow == 4)
-        {
-            slow = 0;
-            ifram_walk_left = (ifram_walk_left + 1) % walk_left.Count;
-        }
-    }
-
-    private void Fly(ref int Xscroll)
-    {
-        slow_fly++;
-        if (y > 20) y -= 5;
-        else if (x > 8700) x -= 5;
-        else x += 5;
-
-        if (slow_fly == 4)
-        {
-            ifram_fly_left = (ifram_fly_left + 1) % fly_left.Count;
-            slow_fly = 0;
-        }
-    }
-
-    private void DownFly(ref int Xscroll, Hero hero, ref int Volume_blood_boss)
-    {
-        if (y < 620) y += 5;
-        else
-        {
-            int heroXe = hero.hero_ideal[0].x;
-            int heroYe = hero.hero_ideal[0].y;
-            int margin = 10;
-
-            if (heroXe >= (x - 400 - Xscroll) - margin && heroYe == 647)
+            if (Volume_blood_boss <= 0)
             {
-                Volume_blood_boss -= 5;
+                Death();
+                return;
             }
-
-            count_vib++;
-            if (count_vib == 30)
+            switch (State)
             {
-                count_vib = 0;
-                State = BossState.WalkLeft; 
-            }
-
-            ShakeScreen(ref Xscroll);
-        }
-    }
-
-    private void DeathState(ref int Xscroll, ref bool lose_boss, ref int finish)
-    {
-        lose_boss = true;
-
-        if (y < 620) y += 5;
-        else if (finish != 1)
-        {
-            count_vib++;
-            if (count_vib == 30)
-            {
-                finish = 1;
-                count_vib = 0;
-            }
-            ShakeScreen(ref Xscroll);
-        }
-        else
-        {
-            e++;
-            if (e == 30)
-            {
-                if (ifram_death < death.Count - 1)
-                    ifram_death++;
-                e = 0;
+                case BossState.DownFly:
+                    FlyDown(); break;
+                case BossState.Fly:
+                    FlyBoss(); break;
+                case BossState.WalkLeft:
+                    AnimateWalkLeft(); break;
+                default:
+                 break;
             }
         }
-    }
 
-    private void ShakeScreen(ref int Xscroll)
-    {
-        // اهتزاز الشاشة
-        if (cv % 2 == 0) Xscroll += 30;
-        else Xscroll -= 30;
+        // ====== Death ======
+        public override void Death()
+        {
+            State = BossState.Death;
+            Bitmap img = DeathAnim.GetFrame();
 
-        cv++;
-        if (cv == 5) cv = 0;
+            if (y < 620)
+            {
+                MoveDownOnDeath();
+            }
+            else
+            {
+                AnimateDeath();
+            }
+        }
+
+        void MoveDownOnDeath() => y += 5;
+
+        void AnimateDeath()
+        {
+            DeathAnim.FrameCounter++;
+            if (DeathAnim.FrameCounter >= 30)
+            {
+                if (DeathAnim.CurrentFrame < DeathAnim.Frames.Count - 1)
+                    DeathAnim.CurrentFrame++;
+                DeathAnim.FrameCounter = 0;
+            }
+        }
+
+        // ====== Fly Down ======
+        public override void FlyDown()
+        {
+            MoveBasic();
+        }
+        // ====== Fly ======
+        public override void Fly()
+        {
+            FlyOrPatrol();
+        }
+
+        public void FlyBoss()
+        {
+            FlyLeft.Animate(4);
+            Fly();
+        }
+
+        public override void FlyOrPatrol()
+        {
+            if (y > 20)
+                y -= 5; // الطيران للأعلى --->Fly up
+            else if (x > 8700 && !RightFly)
+                x -= 5; // التحرك لليسار --->Move Left
+            else
+            {
+                RightFly = true;
+                x += 5; // التحرك لليمين --->Move Right
+                if (x >= 10000)
+                    RightFly = false;
+            }
+        }
+
+        // ====== Walk Left ======
+        void AnimateWalkLeft()
+        {
+            WalkLeft.Animate(4);
+            MoveLeft();
+           
+        }
+
+        public override void MoveLeft() => x -= 3;
+        // ====== Move Basic ======
+        public override void MoveBasic()
+        { 
+            if(y<670)
+            {
+                y += 5;// Fly down--->الطيران للاسفل
+            }
+            else
+            {
+                State = GameStates.BossState.Fly;
+            }
+        }
     }
 }
+
