@@ -1,151 +1,27 @@
-// =======================================
-// Boss Class
-// ---------------------------------------
-// This class is responsible only for:
-// 1. AI logic (decision making and behavior)
-// 2. State Machine for each action (Walk, Fly, DownFly, Death)
-// Note: Rendering (drawing) is handled by another class, e.g., GameController/Renderer
-// =======================================
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static WindowsFormsApp26.GameStates;
+# 🎮 Boss AI State Machine  
 
-namespace WindowsFormsApp26
-{
-    internal class Boss : CreatureActions
-    {
-        // ====== Constants ======
-        private const int DeathFallLimitY = 620;
-        private const int FlyUpLimitY = 20;
-        private const int LeftFlyBoundaryX = 8700;
-        private const int RightFlyBoundaryX = 10000;
-        private const int WalkSpeed = 3;
-        private const int FlySpeed = 5;
-        private const int DeathAnimFrameThreshold = 30;
+This repository showcases the **AI State Machine** implementation for a custom Boss Fight in my 2D game built with **C# Windows Forms**.  
+Instead of sharing the entire project (thousands of lines of code), here I highlight the most important part:  
+the **artificial intelligence system** that drives the boss’s behavior.  
 
-        // ====== Properties ======
-        public int BossHealth = 100;
-        public bool IsFlyingRight = false;
-        public BossState State = BossState.Idle;
+## 🚀 Features of the Boss AI
+- **Finite State Machine (FSM)** to control boss behavior (Idle, Walk, Fly, Attack, Death).  
+- Smooth **state transitions** with animations.  
+- Dynamic **player interaction** (boss reacts based on hero’s position).  
+- **Screen shake effect** for dramatic impact.  
+- Easy-to-extend architecture for adding new behaviors.  
 
-        public Animation WalkLeft = new Animation();
-        public Animation FlyLeft = new Animation();
-        public Animation DeathAnim = new Animation();
+## 🎥 Demo Video  
+Watch the boss fight on [LinkedIn](https://www.linkedin.com/posts/kerolos-adel-190948375_gamedevelopment-csharp-backenddeveloper-activity-7351989946074701824-Umsv?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFzdtvwBqq9LIvH0ErzLfci3qroeYaCnOjY) 
 
-        // ====== State Machine ======
-        public void Logic_StateMachine()
-        {
-            if (BossHealth <= 0)
-            {
-                Death();
-                return;
-            }
+## 💻 Source Code  
+The AI logic is available in [`src/BossAI.cs`](src/BossAI.cs).  
 
-            switch (State)
-            {
-                case BossState.DownFly:
-                    FlyDown();
-                    break;
-                case BossState.Fly:
-                    FlyBoss();
-                    break;
-                case BossState.WalkLeft:
-                    AnimateWalkLeft();
-                    break;
-                default:
-                    break;
-            }
-        }
+## ℹ️ Notes  
+- This is a **highlighted part** of a full custom game project (graphics, animations, controls, sounds, etc.).  
+- The focus here is on the **AI and State Machine design**, which makes the boss fight challenging and engaging.  
+- The full game includes more mechanics such as bullets, traps, elevators, collectibles, and a final boss battle.  
 
-        // ====== Death ======
-        public override void Death()
-        {
-            State = BossState.Death;
+---
 
-            if (y < DeathFallLimitY)
-            {
-                MoveDownOnDeath();
-            }
-            else
-            {
-                AnimateDeath();
-            }
-        }
-
-        void MoveDownOnDeath() => y += FlySpeed;
-
-        void AnimateDeath()
-        {
-            DeathAnim.FrameCounter++;
-            if (DeathAnim.FrameCounter >= DeathAnimFrameThreshold)
-            {
-                if (DeathAnim.CurrentFrame < DeathAnim.Frames.Count - 1)
-                    DeathAnim.CurrentFrame++;
-                DeathAnim.FrameCounter = 0;
-            }
-        }
-
-        // ====== Fly Down ======
-        public override void FlyDown()
-        {
-            MoveBasic();
-        }
-
-        // ====== Fly ======
-        public override void Fly()
-        {
-            FlyOrPatrol();
-        }
-
-        public void FlyBoss()
-        {
-            FlyLeft.Animate(4);
-            Fly();
-        }
-
-        public override void FlyOrPatrol()
-        {
-            if (y > FlyUpLimitY)
-            {
-                y -= FlySpeed; //---> Fly up
-            }
-            else if (x > LeftFlyBoundaryX && !IsFlyingRight)
-            {
-                x -= FlySpeed; //---> Move left
-            }
-            else
-            {
-                IsFlyingRight = true;
-                x += FlySpeed; //---> Move right
-                if (x >= RightFlyBoundaryX)
-                    IsFlyingRight = false;
-            }
-        }
-
-        // ====== Walk Left ======
-        void AnimateWalkLeft()
-        {
-            WalkLeft.Animate(4);
-            MoveLeft();
-        }
-
-        public override void MoveLeft() => x -= WalkSpeed;
-
-        // ====== Move Basic ======
-        public override void MoveBasic()
-        {
-            if (y < DeathFallLimitY)
-            {
-                y += FlySpeed; // Fly down
-            }
-            else
-            {
-                State = BossState.Fly;
-            }
-        }
-    }
-}
+⭐ If you find this project interesting, feel free to explore, learn, and connect with me!  
