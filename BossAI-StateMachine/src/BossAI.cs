@@ -1,3 +1,11 @@
+// =======================================
+// Boss Class
+// ---------------------------------------
+// This class is responsible only for:
+// 1. AI logic (decision making and behavior)
+// 2. State Machine for each action (Walk, Fly, DownFly, Death)
+// Note: Rendering (drawing) is handled by another class, e.g., GameController/Renderer
+// =======================================
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -46,8 +54,6 @@ namespace WindowsFormsApp26
         public override void Death()
         {
             State = BossState.Death;
-            Bitmap img = DeathAnim.GetFrame();
-
             if (y < 620)
             {
                 MoveDownOnDeath();
@@ -91,13 +97,13 @@ namespace WindowsFormsApp26
         public override void FlyOrPatrol()
         {
             if (y > 20)
-                y -= 5; // الطيران للأعلى --->Fly up
+                y -= 5; //--->Fly up
             else if (x > 8700 && !RightFly)
-                x -= 5; // التحرك لليسار --->Move Left
+                x -= 5; //--->Move Left
             else
             {
                 RightFly = true;
-                x += 5; // التحرك لليمين --->Move Right
+                x += 5; // --->Move Right
                 if (x >= 10000)
                     RightFly = false;
             }
