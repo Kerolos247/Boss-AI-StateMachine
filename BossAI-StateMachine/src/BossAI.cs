@@ -10,19 +10,26 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using static WindowsFormsApp26.GameStates;
 
 namespace WindowsFormsApp26
 {
     internal class Boss : CreatureActions
     {
-        public int Volume_blood_boss = 100;
-        public bool RightFly = false;
+        // ====== Constants ======
+        private const int DeathFallLimitY = 620;
+        private const int FlyUpLimitY = 20;
+        private const int LeftFlyBoundaryX = 8700;
+        private const int RightFlyBoundaryX = 10000;
+        private const int WalkSpeed = 3;
+        private const int FlySpeed = 5;
+        private const int DeathAnimFrameThreshold = 30;
 
+        // ====== Properties ======
+        public int BossHealth = 100;
+        public bool IsFlyingRight = false;
         public BossState State = BossState.Idle;
 
         public Animation WalkLeft = new Animation();
@@ -30,23 +37,27 @@ namespace WindowsFormsApp26
         public Animation DeathAnim = new Animation();
 
         // ====== State Machine ======
-        public void Logic_StateMachine(Graphics g, int Xscroll)
+        public void Logic_StateMachine()
         {
-            if (Volume_blood_boss <= 0)
+            if (BossHealth <= 0)
             {
                 Death();
                 return;
             }
+
             switch (State)
             {
                 case BossState.DownFly:
-                    FlyDown(); break;
+                    FlyDown();
+                    break;
                 case BossState.Fly:
-                    FlyBoss(); break;
+                    FlyBoss();
+                    break;
                 case BossState.WalkLeft:
-                    AnimateWalkLeft(); break;
+                    AnimateWalkLeft();
+                    break;
                 default:
-                 break;
+                    break;
             }
         }
 
@@ -54,7 +65,8 @@ namespace WindowsFormsApp26
         public override void Death()
         {
             State = BossState.Death;
-            if (y < 620)
+
+            if (y < DeathFallLimitY)
             {
                 MoveDownOnDeath();
             }
@@ -64,12 +76,12 @@ namespace WindowsFormsApp26
             }
         }
 
-        void MoveDownOnDeath() => y += 5;
+        void MoveDownOnDeath() => y += FlySpeed;
 
         void AnimateDeath()
         {
             DeathAnim.FrameCounter++;
-            if (DeathAnim.FrameCounter >= 30)
+            if (DeathAnim.FrameCounter >= DeathAnimFrameThreshold)
             {
                 if (DeathAnim.CurrentFrame < DeathAnim.Frames.Count - 1)
                     DeathAnim.CurrentFrame++;
@@ -82,6 +94,7 @@ namespace WindowsFormsApp26
         {
             MoveBasic();
         }
+
         // ====== Fly ======
         public override void Fly()
         {
@@ -96,16 +109,20 @@ namespace WindowsFormsApp26
 
         public override void FlyOrPatrol()
         {
-            if (y > 20)
-                y -= 5; //--->Fly up
-            else if (x > 8700 && !RightFly)
-                x -= 5; //--->Move Left
+            if (y > FlyUpLimitY)
+            {
+                y -= FlySpeed; //---> Fly up
+            }
+            else if (x > LeftFlyBoundaryX && !IsFlyingRight)
+            {
+                x -= FlySpeed; //---> Move left
+            }
             else
             {
-                RightFly = true;
-                x += 5; // --->Move Right
-                if (x >= 10000)
-                    RightFly = false;
+                IsFlyingRight = true;
+                x += FlySpeed; //---> Move right
+                if (x >= RightFlyBoundaryX)
+                    IsFlyingRight = false;
             }
         }
 
@@ -114,22 +131,21 @@ namespace WindowsFormsApp26
         {
             WalkLeft.Animate(4);
             MoveLeft();
-           
         }
 
-        public override void MoveLeft() => x -= 3;
+        public override void MoveLeft() => x -= WalkSpeed;
+
         // ====== Move Basic ======
         public override void MoveBasic()
-        { 
-            if(y<670)
+        {
+            if (y < DeathFallLimitY)
             {
-                y += 5;// Fly down--->الطيران للاسفل
+                y += FlySpeed; // Fly down
             }
             else
             {
-                State = GameStates.BossState.Fly;
+                State = BossState.Fly;
             }
         }
     }
 }
-
