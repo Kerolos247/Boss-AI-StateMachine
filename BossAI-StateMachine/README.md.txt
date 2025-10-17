@@ -15,7 +15,7 @@ the **artificial intelligence system** that drives the boss’s behavior.
 Below is a short gameplay demo of the boss fight running in action:  
 
 <video width="640" height="360" controls>
-  <source src="Demo/bossfight.mp4" type="video/mp4">
+  <source src="https://streamable.com/ua29g2" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
@@ -32,3 +32,4 @@ The AI logic is available in [`src/BossAI.cs`](src/BossAI.cs).
 ---
 
 ⭐ If you find this project interesting, feel free to explore, learn, and connect with me!  
+
