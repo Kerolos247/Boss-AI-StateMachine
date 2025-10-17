@@ -12,12 +12,9 @@ the **artificial intelligence system** that drives the boss’s behavior.
 - Easy-to-extend architecture for adding new behaviors.  
 
 ## 🎥 Demo Video  
-Below is a short gameplay demo of the boss fight running in action:  
+You can **download and watch the gameplay video** from the [`Demo`](./Demo) folder in this repository.  
+It showcases the **Boss AI State Machine** in action.
 
-<video width="640" height="360" controls>
-  <source src="https://cdn-cf-east.streamable.com/video/mp4/ua29g2.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
 ---
 
 ## 💻 Source Code  
@@ -31,5 +28,6 @@ The AI logic is available in [`src/BossAI.cs`](src/BossAI.cs).
 ---
 
 ⭐ If you find this project interesting, feel free to explore, learn, and connect with me!  
+
 
 
