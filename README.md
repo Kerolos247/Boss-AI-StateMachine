@@ -24,51 +24,51 @@ The class ensures that the boss behaves realistically in the game world, moves a
 
 Health & Death:
 
-Tracks boss health (BossHealth)
+- Tracks boss health (BossHealth)
 
-When health ≤ 0, triggers Death() state with falling animation and death frames
+- When health ≤ 0, triggers Death() state with falling animation and death frames
 
 Flying Behavior:
 
-Moves up/down and left/right between defined boundaries
+- Moves up/down and left/right between defined boundaries
 
-Patrol logic with IsFlyingRight flag to switch directions
+- Patrol logic with IsFlyingRight flag to switch directions
 
-Smooth flying animation via FlyLeft.Animate()
+- Smooth flying animation via FlyLeft.Animate()
 
 Walking Behavior:
 
-Moves left with walking animation via WalkLeft.Animate()
+- Moves left with walking animation via WalkLeft.Animate()
 
-State Machine Logic:
+- State Machine Logic:
 
-Logic_StateMachine() method checks boss health and current state, then triggers the appropriate behavior method (WalkLeft, FlyBoss, FlyDown, Death)
+- Logic_StateMachine() method checks boss health and current state, then triggers the appropriate behavior method (WalkLeft, FlyBoss, FlyDown, Death)
 
 Animations:
 
-Separate Animation objects for walking, flying, and death
+- Separate Animation objects for walking, flying, and death
 
-Handles frame updates and frame counters to create smooth animation sequences
+- Handles frame updates and frame counters to create smooth animation sequences
 
 Reusable Movement Methods:
 
-MoveLeft(), MoveBasic(), FlyOrPatrol() for modular movement logic
+- MoveLeft(), MoveBasic(), FlyOrPatrol() for modular movement logic
 
-🔹 How It Works
+🔹 How It Works:
 
-The Logic_StateMachine() is called each game update cycle.
+- The Logic_StateMachine() is called each game update cycle.
 
-Depending on the boss’s state and health, the class executes one of the movement or animation methods.
+- Depending on the boss’s state and health, the class executes one of the movement or animation methods.
 
 Each behavior method manages:
 
-Position (x, y) updates
+- Position (x, y) updates
 
-Direction and boundary checks
+- Direction and boundary checks
 
-Animation frame updates
+- Animation frame updates
 
-This allows the boss to walk, fly, patrol, or die smoothly, while keeping AI logic decoupled from rendering.
+- This allows the boss to walk, fly, patrol, or die smoothly, while keeping AI logic decoupled from rendering.
 
 🔹 Technologies & Concepts Used
 
