@@ -1,83 +1,26 @@
-🕹 Boss State Machine Class
+## 🕹 Boss AI State Machine
 
-  This class represents the Boss AI and State Machine in my game. It is responsible for decision making, behavior logic, and managing the boss’s actions, while rendering/drawing is handled by other classes (e.g., GameController or Renderer).
+Implemented a Boss AI system using a State Machine pattern to control behavior, decision-making, and movement logic, while keeping rendering fully decoupled.
 
-🔹 Overview
+### 🔹 Key Features
 
-The Boss class extends CreatureActions and implements:
+* Designed a state-driven system handling multiple boss states:
+  Walk, Fly, DownFly, and Death
+* Implemented dynamic behavior switching based on health and current state
+* Built smooth movement logic with boundary-based patrol and directional control
+* Developed a complete flying system with vertical and horizontal transitions
+* Created a death sequence with animation handling and state transition
 
-AI Logic: Determines the boss behavior based on health and current state.
+### 🔹 Architecture & Design
 
-State Machine: Handles the transitions and animations for different states:
+* Applied the State Machine pattern to manage behavior transitions
+* Separated game logic from rendering (Separation of Concerns)
+* Built reusable movement methods for modular and maintainable code
+* Structured animation handling using frame-based updates
 
-- WalkLeft
+### 🔹 Technologies & Concepts
 
-- Fly
-
-- DownFly
-
-- Death
-
-The class ensures that the boss behaves realistically in the game world, moves according to boundaries, and triggers proper animations.
-
-🔹 Key Features
-
-Health & Death:
-
-- Tracks boss health (BossHealth)
-
-- When health ≤ 0, triggers Death() state with falling animation and death frames
-
-Flying Behavior:
-
-- Moves up/down and left/right between defined boundaries
-
-- Patrol logic with IsFlyingRight flag to switch directions
-
-- Smooth flying animation via FlyLeft.Animate()
-
-Walking Behavior:
-
-- Moves left with walking animation via WalkLeft.Animate()
-
-- State Machine Logic:
-
-- Logic_StateMachine() method checks boss health and current state, then triggers the appropriate behavior method (WalkLeft, FlyBoss, FlyDown, Death)
-
-Animations:
-
-- Separate Animation objects for walking, flying, and death
-
-- Handles frame updates and frame counters to create smooth animation sequences
-
-Reusable Movement Methods:
-
-- MoveLeft(), MoveBasic(), FlyOrPatrol() for modular movement logic
-
-🔹 How It Works:
-
-- The Logic_StateMachine() is called each game update cycle.
-
-- Depending on the boss’s state and health, the class executes one of the movement or animation methods.
-
-Each behavior method manages:
-
-- Position (x, y) updates
-
-- Direction and boundary checks
-
-- Animation frame updates
-
-- This allows the boss to walk, fly, patrol, or die smoothly, while keeping AI logic decoupled from rendering.
-
-🔹 Technologies & Concepts Used
-
-- C# and OOP principles
-
-- State Machine pattern for managing boss actions
-
-- Animation handling with frame counters
-
-- Separation of Concerns: AI and logic separate from rendering
-
-- Modular movement methods for reusable code
+* C#, Object-Oriented Programming
+* State Machine Design Pattern
+* Game AI Logic & Behavior Control
+* Animation Systems (frame-based)
